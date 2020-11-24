@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="ISO-8859-1">
     <title>File Sharing</title>
@@ -7,6 +7,15 @@
 </head>
 <body>
     <div class="container-fluid text-center">
+        <div>
+            <form th:action="@{/logout}" method="post">
+                <p>
+                    Welcome <b>[[${#request.userPrincipal.principal.fullName}]]</b>
+                </p>
+                <input type="submit" value="Sign Out"/>
+            </form>
+        </div>
+
         <div>
         <h1>File Sharing</h1>
         </div>
