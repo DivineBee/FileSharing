@@ -1,6 +1,5 @@
 package com.pbl.filesharing.FileSharing.security;
 
-import com.pbl.filesharing.FileSharing.entity.CustomUserDetails;
 import com.pbl.filesharing.FileSharing.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,10 +9,16 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import java.io.IOException;
 
 /**
  * @author Beatrice V.
@@ -58,6 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/home").authenticated()
                 .anyRequest().permitAll()
                 .and()
+                .addFilterBefore(getCustomFilter(), BeforeAuthenticationFilter.class)
                 .formLogin()
                     .usernameParameter("email")
                     .defaultSuccessUrl("/home")
@@ -65,4 +71,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout().logoutSuccessUrl("/").permitAll();
     }
+
+    private BeforeAuthenticationFilter getCustomFilter() throws Exception {
+        BeforeAuthenticationFilter filter = new BeforeAuthenticationFilter();
+        filter.setAuthenticationManager(authenticationManager());
+        filter.setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler(){
+            @Override
+            public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+                System.out.println("onAuthenticationFailure");
+                super.setDefaultFailureUrl("/login?error");
+                super.onAuthenticationFailure(request, response, exception);
+            }
+        });
+        return filter;
+    }
+
 }
