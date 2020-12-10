@@ -111,7 +111,7 @@ public class SQLFilter {
         // string counter
         int stringCounter = 0;
 
-        System.out.println("--Welcome to the CSIT SQL Injection Filter--");
+        System.out.println("--Welcome to the SQL Injection Filter--");
 
         // for each line in the text file, read each line of the SQL strings in
         // from the text file - the label and the string itself
@@ -119,7 +119,7 @@ public class SQLFilter {
 
             // create new file object, hardcode and pass in the dataset file e.g. Queries80.txt or Queries20.txt.  If the file is not present in the project directory
             // you will need to specify the absolute path
-            File sqlFile = new File("Queries20.txt");
+            File sqlFile = new File("B:\\PROG\\PROJECTS\\FileSharing\\FileSharing\\src\\main\\resources\\stuff\\Queries20.txt");
 
             // create new file reader
             FileReader fileReader = new FileReader(sqlFile);

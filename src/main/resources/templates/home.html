@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
 <meta charset="ISO-8859-1">
     <title>File Sharing</title>
@@ -7,7 +8,7 @@
 </head>
 <body>
     <div class="container-fluid text-center">
-        <div>
+        <div th:fragment="logout" sec:authorize="isAuthenticated()">
             <form th:action="@{/logout}" method="post">
                 <p>
                     Welcome <b>[[${#request.userPrincipal.principal.fullName}]]</b>

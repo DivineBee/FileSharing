@@ -57,6 +57,8 @@ public class AppController {
         document.setSize(multipartFile.getSize());
         document.setUploadTime(new Date());
 
+        //AESEncryptDecrypt.encrypt(document);
+
         repository.save(document);
 
         ra.addFlashAttribute("message", "The file has been uploaded successfully.");
@@ -72,6 +74,8 @@ public class AppController {
         }
 
         Document document = result.get();
+
+        //AESEncryptDecrypt.decrypt(document, outputStream);
 
         response.setContentType("application/octet-stream");
         String headerKey = "Content-Disposition";

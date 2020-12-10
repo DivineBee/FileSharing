@@ -69,7 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .defaultSuccessUrl("/home")
                     .permitAll()
                 .and()
-                .logout().logoutSuccessUrl("/").permitAll();
+                    .logout().logoutSuccessUrl("/").permitAll();
     }
 
     private BeforeAuthenticationFilter getCustomFilter() throws Exception {
