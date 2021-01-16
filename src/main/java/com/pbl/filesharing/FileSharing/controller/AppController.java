@@ -1,8 +1,10 @@
 package com.pbl.filesharing.FileSharing.controller;
 
 import com.pbl.filesharing.FileSharing.entity.Document;
+import com.pbl.filesharing.FileSharing.entity.SharingInfo;
 import com.pbl.filesharing.FileSharing.entity.User;
 import com.pbl.filesharing.FileSharing.repository.DocumentRepository;
+import com.pbl.filesharing.FileSharing.repository.ShareRepository;
 import com.pbl.filesharing.FileSharing.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -39,6 +42,9 @@ public class AppController {
     private UserRepository userRepository;
 
     @Autowired
+    private ShareRepository permisionsRepository;
+
+    @Autowired
     private DocumentRepository repository;
 
     @GetMapping("/")
@@ -48,16 +54,16 @@ public class AppController {
 
     @PostMapping("/upload")
     public String uploadFile(@RequestParam("document") MultipartFile multipartFile,
+                             HttpServletRequest request,
                              RedirectAttributes ra) throws IOException {
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
         Document document = new Document();
         document.setName(fileName);
         document.setContent(multipartFile.getBytes());
+        document.setOwner(request.getUserPrincipal().getName());
         document.setSize(multipartFile.getSize());
         document.setUploadTime(new Date());
-
-        //AESEncryptDecrypt.encrypt(document);
 
         repository.save(document);
 
@@ -106,10 +112,34 @@ public class AppController {
         return "register_success";
     }
 
+    @PostMapping("/share")
+    public String shareWith(@RequestParam("shareWith") String shareWith,@RequestParam("docID") Long docId, Model model, HttpServletRequest request){
+
+        System.out.println("Share with" +shareWith);
+        System.out.println("DocID " +docId);
+        String login = request.getUserPrincipal().getName();
+        System.out.println("Current User " + login);
+
+        SharingInfo sharingInfo = new SharingInfo();
+        sharingInfo.setDocID(docId);
+        sharingInfo.setOwnerID(login);
+        sharingInfo.setRecieverID(shareWith);
+
+        permisionsRepository.save(sharingInfo);
+        System.out.println(permisionsRepository.findPermissions().size());
+
+        return "redirect:/home";
+    }
+
     @GetMapping("/home")
-    public String viewDocuments(Model model){
-        List<Document> listDocs = repository.findAll();
+    public String viewDocuments(Model model, HttpServletRequest request){
+
+        String login = request.getUserPrincipal().getName();
+        List<Document> listDocs = repository.findbyLogin(login);
         model.addAttribute("listDocs", listDocs);
+
+        List<Document> listDocsShared = repository.findbyReciever(login);
+        model.addAttribute("listDocsShared", listDocsShared);
         return "home";
     }
 }

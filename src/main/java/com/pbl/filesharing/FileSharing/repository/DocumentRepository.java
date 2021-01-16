@@ -16,6 +16,9 @@ import java.util.List;
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long> {
 
-    @Query("SELECT new Document(d.id, d.name, d.size) FROM Document d ORDER BY d.uploadTime DESC")
-    List<Document> findAll();
+    @Query("SELECT d FROM Document d WHERE OWNER = ?1 ORDER BY d.uploadTime DESC")
+    List<Document> findbyLogin(String login);
+
+    @Query("SELECT d FROM Document d inner join SharingInfo s on s.docID = d.id  WHERE s.recieverID = ?1 ORDER BY d.uploadTime DESC")
+    List<Document> findbyReciever(String login);
 }

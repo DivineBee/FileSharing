@@ -1,6 +1,8 @@
 package com.pbl.filesharing.FileSharing.security.encryption;
 
+import com.pbl.filesharing.FileSharing.entity.Document;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.SerializationUtils;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
@@ -9,6 +11,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
@@ -32,7 +35,9 @@ public class AESEncryptDecrypt {
     // salt for encoding writing it to a file
     public static byte[] salt = new byte[8];
 
-    public static void encrypt(FileInputStream inFile) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidKeyException, InvalidParameterSpecException, BadPaddingException, IllegalBlockSizeException{
+    public static void encrypt(Document doc) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidKeyException, InvalidParameterSpecException, BadPaddingException, IllegalBlockSizeException{
+        byte[] data = SerializationUtils.serialize((Serializable) doc);
+        inFile.read(data);
         // password, iv and salt should be transferred to the other end in a secure manner
         // salt should be transferred to the recipient securely for decryption
         SecureRandom secureRandom = new SecureRandom();

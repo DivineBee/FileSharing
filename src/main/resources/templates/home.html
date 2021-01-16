@@ -1,61 +1,81 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="ISO-8859-1">
+    <meta charset="ISO-8859-1">
     <title>File Sharing</title>
     <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
 </head>
 <body>
-    <div class="container-fluid text-center">
-        <div th:fragment="logout" sec:authorize="isAuthenticated()">
-            <form th:action="@{/logout}" method="post">
-                <p>
-                    Welcome <b>[[${#request.userPrincipal.principal.fullName}]]</b>
-                </p>
-                <input type="submit" value="Sign Out"/>
-            </form>
-        </div>
-
-        <div>
-        <h1>File Sharing</h1>
-        </div>
-
-        <div class="text-success">
-            <h3>[[${message}]]</h3>
-        </div>
-
-        <form th:action="@{/upload}" method="post"
-              enctype="multipart/form-data"
-              style="max-width: 600px; margin: 0 auto"
-              >
-            <div class="border rounded m-3">
-                <h2>Upload Your Files:</h2>
-                <p>
-                    <input type="file" name="document" required />
-                </p>
-                <p>
-                    <input type="submit" value="Upload" class="btn btn-primary"/>
-                </p>
-            </div>
+<div class="container-fluid text-center">
+    <div>
+        <form th:action="@{/logout}" method="post">
+            <p>
+                Welcome <b>[[${#request.userPrincipal.principal.fullName}]]</b>
+                <!--                    Welcome <b>[[${#request.userPrincipal.principal.fullName}]]</b>-->
+            </p>
+            <input type="submit" value="Sign Out"/>
         </form>
-
-        <div class="row border rounded m-3 p-3">
-            <th:block th:each="doc : ${listDocs}">
-                <div class="col">
-                    <div>
-                        <img th:src="@{/images/file.png}" width="50"/>
-                    </div>
-                    <div>
-                        <a th:href="@{'/download?id='+${doc.id}}">[[${doc.name}]]</a>
-                    </div>
-                    <div>
-                        ([[${#numbers.formatInteger(doc.size, 4, 'COMMA')}]] bytes)
-                    </div>
-                </div>
-            </th:block>
-        </div>
-
     </div>
+
+    <div>
+        <h1>File Sharing</h1>
+    </div>
+
+    <div class="text-success">
+        <h3>[[${message}]]</h3>
+    </div>
+
+    <form th:action="@{/upload}" method="post"
+          enctype="multipart/form-data"
+          style="max-width: 600px; margin: 0 auto"
+    >
+        <div class="border rounded m-3">
+            <h2>Upload Your Files:</h2>
+            <p>
+                <input type="file" name="document" required />
+            </p>
+            <p>
+                <input type="submit" value="Upload" class="btn btn-primary"/>
+            </p>
+        </div>
+    </form>
+
+    <div class="row border rounded m-3 p-3">
+        <th:block th:each="doc : ${listDocs}">
+            <div class="col">
+                <div>
+                    <img th:src="@{/images/file.png}" width="50"/>
+                </div>
+                <div>
+                    <a th:href="@{'/download?id='+${doc.id}}">[[${doc.name}]]</a>
+                </div>
+                <div>
+                    ([[${#numbers.formatInteger(doc.size, 4, 'COMMA')}]] bytes)
+                </div>
+                <form th:action="@{/share}" method="post">
+                    <input type="text" placeholder="Email to share with" name="shareWith">
+                    <input type="hidden" th:value="${doc.id}" name="docID">
+                    <button type="submit">Share</button>
+                </form>
+            </div>
+        </th:block>
+    </div>
+    <div class="row border rounded m-3 p-3" style="background:yellow;">
+        <th:block th:each="doc : ${listDocsShared}">
+            <div class="col">
+                <div>
+                    <img th:src="@{/images/file.png}" width="50"/>
+                </div>
+                <div>
+                    <a th:href="@{'/download?id='+${doc.id}}">[[${doc.name}]]</a>
+                </div>
+                <div>
+                    ([[${#numbers.formatInteger(doc.size, 4, 'COMMA')}]] bytes)
+                </div>
+            </div>
+        </th:block>
+    </div>
+
+</div>
 </body>
 </html>

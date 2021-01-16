@@ -1,7 +1,6 @@
 package com.pbl.filesharing.FileSharing.entity;
 
 import javax.persistence.*;
-import javax.print.Doc;
 import java.util.Date;
 
 /**
@@ -19,11 +18,16 @@ public class Document {
     @Column(length = 512, nullable = false, unique = true)
     private String name;
 
+    @Column(length = 512, nullable = false)
+    private String owner;
+
     private long size;
 
     @Column(name = "upload_time")
     private Date uploadTime;
 
+    @Lob
+    @Column(columnDefinition="BLOB")
     private byte[] content;
 
     public Long getId() {
@@ -40,6 +44,14 @@ public class Document {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getOwner() {
+        return name;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     public long getSize() {
