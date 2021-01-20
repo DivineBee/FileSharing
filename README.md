@@ -8,6 +8,7 @@ Group: FAF-182
 The application of security in web application is of profound importance due to the extended use  
 of web for business. Most of the attacks, are either because the developers are not considering  
 security as a concern or due to the security flaws in designing and developing the applications.  
+
 The enforcement of security in the software development life cycle of the application may  
 reduce the high cost and efforts associated with implementing security at a later stage. For  
 this purpose, we are designing and developing a secure web based application for file sharing.  
